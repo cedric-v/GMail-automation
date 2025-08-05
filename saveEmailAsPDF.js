@@ -1,13 +1,13 @@
-// A configurer pour être exécuté toutes les 12 heures
-// Convertit l'email en PDF et le stocke sur Google Drive
-// Si l'e-mail contient un PDF, le stock sur GDrive
-// Ajoute toutes les pièces jointes PDF dans le même dossier
-// Remplace le libellé Gmail après traitement + archive le message
+// To be scheduled to run every 12 hours
+// Converts the email to PDF and stores it on Google Drive
+// If the email contains a PDF attachment, stores it on Google Drive
+// Adds all PDF attachments to the same folder
+// Replaces the Gmail label after processing and archives the message
 
 function saveEmailAsPDF() {
-  var labelSource = "Comptabilite/FWDGDrivejustificatifsGoogleApsScript";  // Label à surveiller
-  var labelProcessed = "Comptabilite/FWDGDrivejustificatifsGoogleApsScriptProcessed";  // Nouveau label après traitement
-  var folderId = "YOUR_FOLDER_ID_HERE"; // Dossier cible sur Google Drive, cf. URL
+  var labelSource = "Comptabilite/FWDGDrivejustificatifsGoogleApsScript";  // Label to monitor
+  var labelProcessed = "Comptabilite/FWDGDrivejustificatifsGoogleApsScriptProcessed";  // New label after processing
+  var folderId = "YOUR_FOLDER_ID_HERE"; // Target folder on Google Drive, see URL
 
   var threads = GmailApp.search("label:" + labelSource);
   var folder = DriveApp.getFolderById(folderId);
@@ -24,16 +24,16 @@ function saveEmailAsPDF() {
       var hasPDFAttachment = false;
       var attachments = message.getAttachments();
 
-      // Vérifier si une pièce jointe PDF est présente
+      // Check if a PDF attachment is present
       for (var k = 0; k < attachments.length; k++) {
         var attachment = attachments[k];
         if (attachment.getContentType() === "application/pdf") {
-          folder.createFile(attachment); // Stocker la pièce jointe PDF
+          folder.createFile(attachment); // Store the PDF attachment
           hasPDFAttachment = true;
         }
       }
 
-      // Si aucune pièce jointe PDF, générer un PDF à partir du mail
+      // If no PDF attachment, generate a PDF from the email body
       if (!hasPDFAttachment) {
         var htmlBody = message.getBody();
         var blob = Utilities.newBlob(htmlBody, "text/html", baseFileName + ".pdf");
@@ -42,18 +42,18 @@ function saveEmailAsPDF() {
       }
     }
 
-    // Ajouter le label "traité"
+    // Add the "processed" label
     var processedLabel = GmailApp.getUserLabelByName(labelProcessed);
     if (!processedLabel) {
       processedLabel = GmailApp.createLabel(labelProcessed);
     }
     threads[i].addLabel(processedLabel);
 
-    // Supprimer le label source et archiver l'email
+    // Remove the source label and archive the email
     var sourceLabel = GmailApp.getUserLabelByName(labelSource);
     if (sourceLabel) {
       threads[i].removeLabel(sourceLabel);
     }
-    threads[i].moveToArchive(); // Ne plus l’avoir en boîte de réception
+    threads[i].moveToArchive(); // Remove from inbox
   }
 }
