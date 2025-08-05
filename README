@@ -17,6 +17,18 @@ This repository contains two Google Apps Script files:
    - For the email-to-PDF script, set the trigger to run every 12 hours or as needed.
 4. **Review and adapt reply templates and keywords** for your organization.
 
+## Recipient Configuration
+
+- In the auto-response script, you must configure the list of allowed recipient email addresses.
+- Update the `allowedRecipients` array in [`autoResponseMailsBasedOnKeywordsGoogleAppsScript.js`](autoResponseMailsBasedOnKeywordsGoogleAppsScript.js) with the email addresses that should receive automatic replies.
+- The script will only send an automatic response if the incoming email was sent to one of these specified addresses.
+
+**Example:**
+```javascript
+const allowedRecipients = ['your_email_1@example.com', 'your_email_2@example.com'];
+```
+Replace the example addresses with your actual email addresses.
+
 ## Permissions
 
 These scripts require access to Gmail and Google Drive. When deploying, review and accept the necessary permissions.
