@@ -12,7 +12,9 @@ This repository contains two Google Apps Script files:
    - Update `labelSource`, `labelProcessed`, and `folderId` in [`saveEmailAsPDF.js`](saveEmailAsPDF.js).
    - Update `keywordsSet1`, `keywordsSet2`, and response placeholders in [`autoResponseMailsBasedOnKeywordsGoogleAppsScript.js`](autoResponseMailsBasedOnKeywordsGoogleAppsScript.js).
    - Ensure labels used in both scripts exist or are created by the script.
-3. **Set up time-based triggers** in Apps Script to run the functions automatically (e.g., every 12 hours).
+3. **Set up time-based triggers** in Apps Script:
+   - For the automatic keyword-based reply script, configure a time-driven trigger to run every minute for near real-time responses.
+   - For the email-to-PDF script, set the trigger to run every 12 hours or as needed.
 4. **Review and adapt reply templates and keywords** for your organization.
 
 ## Permissions
