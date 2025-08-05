@@ -4,6 +4,8 @@ function autoResponseMailsBasedOnKeywords() {
   // Define keywords to trigger auto-response (replace with your own)
   const keywordsSet1 = ['KEYWORD_1', 'KEYWORD_2'];
   const keywordsSet2 = ['KEYWORD_3', 'KEYWORD_4'];
+  // Define allowed recipient addresses (replace with your own)
+  const allowedRecipients = ['your_email_1@example.com', 'your_email_2@example.com'];
 
   for (const thread of threads) {
     const messages = thread.getMessages();
@@ -11,6 +13,7 @@ function autoResponseMailsBasedOnKeywords() {
 
     const subject = lastMessage.getSubject().toLowerCase();
     const body = lastMessage.getPlainBody().toLowerCase();
+    const recipients = lastMessage.getTo().toLowerCase();
 
     // Check for keywords in subject or body
     let matchSet1 = keywordsSet1.some(word => subject.includes(word) || body.includes(word));
@@ -23,7 +26,11 @@ function autoResponseMailsBasedOnKeywords() {
     }
 
     // Only respond if the thread has a single message (no replies yet)
-    if (messages.length === 1) {
+    // Only reply if the email was sent to one of the allowed addresses
+    if (
+      messages.length === 1 &&
+      allowedRecipients.some(addr => recipients.includes(addr))
+    ) {
       let responseText = null;
 
       if (matchSet1) {
@@ -39,7 +46,7 @@ function autoResponseMailsBasedOnKeywords() {
           responseText,
           {
             name: "Support Team",
-            replyTo: Session.getActiveUser().getEmail()
+            replyTo: "your_reply_to@example.com"
           }
         );
         thread.markRead();  // Mark thread as read
